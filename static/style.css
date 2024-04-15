@@ -1,0 +1,38 @@
+body {
+    font-family: Arial, sans-serif; /* Improves readability */
+    background-color: #e6fafcff; /* Azure Web background */
+    color: #353d2fff; /* Black Olive text */
+    height: 100vh;
+    margin: 0;
+}
+form {
+    padding: 20px;
+    border: 1px solid #515b3aff; /* Dark Moss Green border */
+    background-color: #f0f8ff;
+    box-shadow: 0 0 10px #6ba368ff; /* Asparagus shadow */
+}
+label {
+    margin-bottom: 5px;
+    display: block;
+}
+input[type="text"],
+input[type="password"] {
+    width: calc(100% - 22px); /* Full width minus padding */
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #6ba368ff; /* Asparagus border */
+}
+input[type="submit"] {
+    background-color: #9cfc97ff; /* Light Green background */
+    color: #353d2fff; /* Black Olive text */
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+}
+input[type="submit"]:hover {
+    background-color: #6ba368ff; /* Asparagus background on hover */
+}
+p {
+    color: #d9534f; /* Use a red tone for errors */
+}
+

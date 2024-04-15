@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template, url_for, redirect
 from markupsafe import escape
+import db
 
 # Create the Web Server Gateway Interface Application
 # __name__ returns the file name e.g. app.py this lets us know where to find things like the template
@@ -45,7 +46,7 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        if valid_login(username, password):
+        if db.valid_login(username, password):
             return redirect(url_for("index"))
         else:
             error = "Login Attempt Failed"
@@ -54,11 +55,7 @@ def login():
         return render_template("login.html", error=error)
 
 
-def valid_login(un, pwd):
-    if un == "admin" and pwd == "1234":
-        return True
-    else:
-        return False
+
 
 
 if __name__ == '__main__':
