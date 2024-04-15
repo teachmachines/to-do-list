@@ -1,10 +1,35 @@
 from flask import Flask, request, render_template, url_for, redirect
 from markupsafe import escape
-import db
+from flask_sqlalchemy import SQLAlchemy
+
 
 # Create the Web Server Gateway Interface Application
 # __name__ returns the file name e.g. app.py this lets us know where to find things like the template
 app = Flask(__name__)
+#  Flask is a configuration object used to store the configuration parameters of a Flask application
+# Here we specify where the database will be stored
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///login.db'
+#  SQLAlchemy will not signal the application every time a change is about to be made in the database.
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Create a database object
+db = SQLAlchemy(app)
+
+# Create the database
+with app.app_context():
+    db.create_all()
+
+
+class User(db.Model):
+    """Create a User class that inherits from db.Model. This class will be used to create the database table.
+    The class has three columns: id, username, and password. The id column is the primary key, username is a
+    unique string, and password is a string."""
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    password = db.Column(db.String(80), nullable=False)
+
+    def __repr__(self):
+        return f'<User {self.username}>'
 
 
 @app.route('/')
@@ -53,9 +78,6 @@ def login():
             return render_template("login.html", error=error)
     elif request.method == "GET":
         return render_template("login.html", error=error)
-
-
-
 
 
 if __name__ == '__main__':
