@@ -15,10 +15,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Create a database object
 db = SQLAlchemy(app)
 
-# Create the database
-with app.app_context():
-    db.create_all()
-
 
 class User(db.Model):
     """Create a User class that inherits from db.Model. This class will be used to create the database table.
@@ -30,6 +26,11 @@ class User(db.Model):
 
     def __repr__(self):
         return f'<User {self.username}>'
+
+
+# Create the database
+with app.app_context():
+    db.create_all()
 
 
 @app.route('/')
@@ -71,7 +72,8 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        if db.valid_login(username, password):
+        user = User.query.filter_by(username=username, password=password).first()
+        if user:
             return redirect(url_for("index"))
         else:
             error = "Login Attempt Failed"
