@@ -27,6 +27,15 @@ class User(db.Model):
     def __repr__(self):
         return f'<User {self.username}>'
 
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
+
+    @staticmethod
+    def check_login(username: str, password: str):
+        """Check if the username and password are valid."""
+        return bool(User.query.filter_by(username=username, password=password).first())
+
 
 # Create the database
 with app.app_context():
@@ -37,6 +46,20 @@ with app.app_context():
 def index():  # put application's code here
     return render_template("index.html")
 
+
+@app.route("/home")
+def home():
+    return render_template("index.html")
+
+
+@app.route("/about")
+def about():
+    return render_template("about.html")
+
+
+@app.route("/contact")
+def contact():
+    return render_template("contact.html")
 
 @app.route("/hello_world")
 def hello_world():
@@ -60,11 +83,6 @@ def show_post(todo_id):
     return f'Todo {todo_id}'
 
 
-# This route will not allow you to access /about/
-@app.route('/about')
-def about():
-    return 'The about page'
-
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
@@ -72,7 +90,7 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        user = User.query.filter_by(username=username, password=password).first()
+        user = User.check_login(username, password)
         if user:
             return redirect(url_for("index"))
         else:

@@ -3,3 +3,7 @@ def valid_login(un, pwd):
         return True
     else:
         return False
+
+
+def register(un, pwd):
+    return True
