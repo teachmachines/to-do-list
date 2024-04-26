@@ -32,6 +32,18 @@ input[type="submit"] {
 input[type="submit"]:hover {
     background-color: #6ba368ff; /* Asparagus background on hover */
 }
+
+input:invalid {
+  border: 2px dashed red;
+}
+
+input:invalid:required {
+  background-image: linear-gradient(to right, pink, lightgreen);
+}
+
+input:valid {
+  border: 2px solid black;
+}
 p {
     color: #d9534f; /* Use a red tone for errors */
 }
