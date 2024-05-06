@@ -1,7 +1,7 @@
-from flask import Flask, request, render_template, url_for, redirect
+from flask import Flask, request, render_template, url_for, redirect, flash
 from markupsafe import escape
 from flask_sqlalchemy import SQLAlchemy
-
+import logging
 
 # Create the Web Server Gateway Interface Application
 # __name__ returns the file name e.g. app.py this lets us know where to find things like the template
@@ -11,6 +11,8 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///login.db'
 #  SQLAlchemy will not signal the application every time a change is about to be made in the database.
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# The secret key is used to secure the session data stored in the cookies.
+app.config['SECRET_KEY'] = 'your-unique-secret-key'
 
 # Create a database object
 db = SQLAlchemy(app)
@@ -37,9 +39,31 @@ class User(db.Model):
         return bool(User.query.filter_by(username=username, password=password).first())
 
 
+class Contact(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30), nullable=False)
+    email = db.Column(db.String(255), nullable=False)
+    message = db.Column(db.String(255), nullable=False)
+
+    def __repr__(self):
+        return f'<Contact {self.name}>'
+
+    def __init__(self, name, email, message):
+        self.name = name
+        self.email = email
+        self.message = message
+
+
 # Create the database
 with app.app_context():
     db.create_all()
+
+# Set up logging
+logging.basicConfig(filename='app.log',
+                    filemode='w',  # Overwrites the log file
+                    level=logging.DEBUG,
+                    format='%(asctime)s - %(levelname)s - %(message)s',
+                    datefmt='%Y-%m-%d %H:%M:%S')
 
 
 @app.route('/')
@@ -57,9 +81,26 @@ def about():
     return render_template("about.html")
 
 
-@app.route("/contact")
+@app.route("/contact", methods=["GET", "POST"])
 def contact():
-    return render_template("contact.html")
+    if request.method == "GET":
+        return render_template("contact.html")
+    elif request.method == "POST":
+        name = request.form["name"]
+        email = request.form["email"]
+        message = request.form["message"]
+        new_contact = Contact(name, email, message)
+        try:
+            db.session.add(new_contact)
+            db.session.commit()
+            flash(f'Thanks {name}, your message has been sent!', 'success')
+            return render_template("contact.html")
+        except SQLAlchemy.SQLAlchemyError as e:
+            flash(f'Unfortunately you message has not been received, please try again', 'danger')
+            # Log the error
+            logging.error(e)
+            return render_template("contact.html")
+
 
 @app.route("/hello_world")
 def hello_world():
@@ -81,7 +122,6 @@ def show_user_profile(username):
 def show_post(todo_id):
     # show the post with the given id, the id is an integer
     return f'Todo {todo_id}'
-
 
 
 @app.route('/login', methods=["GET", "POST"])

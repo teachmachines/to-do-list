@@ -1,50 +1,33 @@
 body {
-    font-family: Arial, sans-serif; /* Improves readability */
-    background-color: #e6fafcff; /* Azure Web background */
+
     color: #353d2fff; /* Black Olive text */
     height: 100vh;
     margin: 0;
 }
-form {
-    padding: 20px;
-    border: 1px solid #515b3aff; /* Dark Moss Green border */
-    background-color: #f0f8ff;
-    box-shadow: 0 0 10px #6ba368ff; /* Asparagus shadow */
-}
-label {
-    margin-bottom: 5px;
-    display: block;
-}
-input[type="text"],
-input[type="password"] {
-    width: calc(100% - 22px); /* Full width minus padding */
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #6ba368ff; /* Asparagus border */
-}
-input[type="submit"] {
-    background-color: #9cfc97ff; /* Light Green background */
-    color: #353d2fff; /* Black Olive text */
-    padding: 10px 15px;
-    border: none;
-    cursor: pointer;
-}
-input[type="submit"]:hover {
-    background-color: #6ba368ff; /* Asparagus background on hover */
+
+
+.btn, .form-label{
+    margin-top: 1em;
 }
 
-input:invalid {
-  border: 2px dashed red;
+
+
+
+
+.error-message {
+  color: red;
+  display: none; /* Hide by default */
 }
 
-input:invalid:required {
-  background-image: linear-gradient(to right, pink, lightgreen);
+.error-message.active {
+  display: block; /* Show when active */
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: #f8d7da; /* Red tone for errors */
+  padding: 10px;
+  border: 1px solid #f5c6cb; /* Red tone for errors */
 }
 
-input:valid {
-  border: 2px solid black;
-}
-p {
-    color: #d9534f; /* Use a red tone for errors */
-}
 

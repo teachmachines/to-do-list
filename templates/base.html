@@ -2,20 +2,63 @@
 <html lang="en">
 <head>
     <title>The educational technology company</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <!-- link to remote bootstrap  5 css -->
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="description" content="The educational technology company">
+    <meta name="keywords" content="education, technology, company">
+    <meta name="author" content="The educational technology company">
+
 </head>
 <body>
-    <h1> The educational technology company </h1>
-    <nav>
-        <ul>
-            <li><a href="{{ url_for('home') }}">Home</a></li>
-            <li><a href="{{ url_for('about') }}">About</a></li>
-            <li><a href="{{ url_for('contact') }}">Contact</a></li>
-            <li><a href="{{ url_for('login') }}">login</a></li>
-        </ul>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('home') }}">The educational technology company</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="navbar-nav">
+                    <a class="nav-link {% if request.endpoint == 'home' %}active" aria-current="page{% endif %}" href="{{ url_for('home') }}">Home</a>
+                    <a class="nav-link {% if request.endpoint == 'about' %}active" aria-current="page{% endif %}" href="{{ url_for('about') }}">About</a>
+                    <a class="nav-link {% if request.endpoint == 'contact' %}active" aria-current="page{% endif %}" href="{{ url_for('contact') }}">Contact</a>
+                    <a class="nav-link {% if request.endpoint == 'login' %}active" aria-current="page{% endif %}" href="{{ url_for('login') }}">Log In</a>
+                </div>
+            </div>
+        </div>
     </nav>
-    {% block content %}
-    {% endblock %}
 
+    <div class="container-fluid md-8">
+        <aside>
+            {% with messages = get_flashed_messages(with_categories=True) %}
+                {% if messages %}
+                    <ul>
+                        {% for category, message in messages %}
+                            <li class="{{ category }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+        </aside>
+    </div>
+
+    <div class="container-fluid md-8">
+        <main>
+
+            {% block content %}
+            {% endblock %}
+
+        </main>
+    </div>
+
+
+<script src="{{ url_for('static', filename='validation.js') }}"></script>
 </body>
 </html>
