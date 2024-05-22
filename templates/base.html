@@ -34,9 +34,9 @@
             </div>
         </div>
     </nav>
-
-    <div class="container-fluid md-8">
-        <aside>
+    <!-- TODO: Make the flash messages and login form hover to the right of the screen -->
+    <div class="row">
+        <aside class="container-fluid md-4">
             {% with messages = get_flashed_messages(with_categories=True) %}
                 {% if messages %}
                     <ul>
@@ -47,10 +47,8 @@
                 {% endif %}
             {% endwith %}
         </aside>
-    </div>
 
-    <div class="container-fluid md-8">
-        <main>
+        <main class="container-fluid md-8">
 
             {% block content %}
             {% endblock %}

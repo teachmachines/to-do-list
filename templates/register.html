@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content %}
+    <form action="/register" method="post"
+          name="registration-form" id="registration-form"
+          aria-labelledby="formTitle" aria-describedby="formDesc">
+        <fieldset class="border p-3">
+            <legend id="formTitle" class="float-none w-auto p-2">Register for an account</legend>
+            <p id="formDesc" class="text-muted">Please fill out the form below to create an account</p>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email:</label>
+                <input type="email" class="form-control" id="email" name="email" form="registration-form"
+                       placeholder="Enter your email address"
+                       maxlength="255"
+                       minlength="5"
+                       pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required />
+                <span class="invalid-feedback error-message" style="display:none; color:red;">
+                    Enter a valid email address
+                </span>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password:</label>
+                <input type="password" class="form-control" id="password" name="password" form="registration-form"
+                       placeholder="Enter your password"
+                       maxlength="255"
+                       pattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$"
+                       required />
+                <span class="invalid-feedback error-message" style="display:none; color:red;">
+                    Password must be at least 8 characters long and contain at least one uppercase letter,
+                    one lowercase letter, one number, and one special character.
+                </span>
+            </div>
+            <div class="mb-3">
+                <label for="password-verify" class="form-label">Password:</label>
+                <input type="password" oninput="verifyPassword()" class="form-control" id="password-verify" form="registration-form"
+                       placeholder="Re-enter your password"
+                       required />
+                <span class="invalid-feedback error-message" style="display:none; color:red;">
+                    Passwords do not match.
+                </span>
+            </div>
+
+                <button type="submit"  class="btn-primary btn-lg">Submit</button>
+        </fieldset>
+    </form>
+
+
+
+    <script>
+        function verifyPassword() {
+            let password = document.getElementById("password").value;
+            let passwordVerify = document.getElementById("password-verify").value;
+            if (password !== passwordVerify) {
+                document.getElementById("password-verify").setCustomValidity("Passwords do not match");
+                return false;
+            } else {
+                document.getElementById("password-verify").setCustomValidity("");
+                return true;
+            }
+        }
+    </script>
+{% endblock %}

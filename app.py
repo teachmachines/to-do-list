@@ -2,6 +2,7 @@ from flask import Flask, request, render_template, url_for, redirect, flash
 from markupsafe import escape
 from flask_sqlalchemy import SQLAlchemy
 import logging
+from sqlalchemy.exc import IntegrityError, DataError, OperationalError, ProgrammingError
 
 # Create the Web Server Gateway Interface Application
 # __name__ returns the file name e.g. app.py this lets us know where to find things like the template
@@ -40,18 +41,45 @@ class User(db.Model):
 
 
 class Contact(db.Model):
+
     id = db.Column(db.Integer, primary_key=True)
+
     name = db.Column(db.String(30), nullable=False)
-    email = db.Column(db.String(255), nullable=False)
+    #  TODO: Add email validation for regex that has a minimum of 5 characters and a maximum of 255 characters
+    #
+    email = db.Column(db.String(255), nullable=False, unique=True)
+    # TODO: Add email validation for regex that has a minimum of 5 characters and a maximum of 255 characters
     message = db.Column(db.String(255), nullable=False)
 
     def __repr__(self):
         return f'<Contact {self.name}>'
 
     def __init__(self, name, email, message):
+        if len(name) < 5:
+            raise ValueError("Name must be at least 5 characters")
+        elif len(name) > 30:
+            raise ValueError("Name must be less than 30 characters")
+        if len(email) < 5:
+            raise ValueError("Email must be at least 5 characters")
+        elif len(email) > 255:
+            raise ValueError("Email must be less than 255 characters")
+        if len(message) < 5:
+            raise ValueError("Message must be at least 5 characters")
+        elif len(message) > 255:
+            raise ValueError("Message must be less than 255 characters")
+        import re
+        email_regex = re.compile(r'^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$')
+        if not email_regex.match(email):
+            raise ValueError("Email is not valid")
+        name_regex = re.compile(r'^[a-zA-Z\s]+$')
+        if not name_regex.match(name):
+            raise ValueError("Name is not valid")
+
         self.name = name
         self.email = email
         self.message = message
+
+          
 
 
 # Create the database
@@ -89,17 +117,48 @@ def contact():
         name = request.form["name"]
         email = request.form["email"]
         message = request.form["message"]
-        new_contact = Contact(name, email, message)
+        try:
+            new_contact = Contact(name, email, message)
+        except ValueError as e:
+            flash(e.args[0], 'danger')
+            # Log the error
+            logging.error(e)
+            return render_template("contact.html")
+
         try:
             db.session.add(new_contact)
             db.session.commit()
             flash(f'Thanks {name}, your message has been sent!', 'success')
             return render_template("contact.html")
-        except SQLAlchemy.SQLAlchemyError as e:
+        except OperationalError as e:
             flash(f'Unfortunately you message has not been received, please try again', 'danger')
             # Log the error
             logging.error(e)
             return render_template("contact.html")
+        except DataError as e:
+            flash(f'Unfortunately your message was not accepted by the database', 'danger')
+            # Log the error
+            logging.error(e)
+            return render_template("contact.html")
+
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        email = request.form["email"]
+        password = request.form["password"]
+        new_user = User(email, password)
+        try:
+            db.session.add(new_user)
+            db.session.commit()
+            flash(f'Thanks {email}, your account has been created!', 'success')
+            return redirect(url_for("login"))
+        except SQLAlchemy.exc.SQLAlchemyError as e:
+            logging.error(e)
+            flash(f'Unfortunately you account has not been created because the email is already registered', 'danger')
+            return render_template("register.html")
+
+    return render_template("register.html")
 
 
 @app.route("/hello_world")
