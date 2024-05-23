@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FocusNest</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dom+Casual&display=swap');
+
+
+        :root {
+            --primary-color: #4A90E2;
+            --secondary-color: #50E3C2;
+            --text-color: #333333;
+            --background-color: #F5F7FA;
+            --highlight-color: #F8E71C;
+            --hover-color: #E0E0E0;
+            --button-green: #28a745;
+            --button-green-hover: #218838;
+        }
+
+    input[type=checkbox] {
+         position: relative;
+	       cursor: pointer;
+        transform: scale(1.2);
+        padding: 10px;
+        margin-right: 1em;
+
+    }
+    input[type=checkbox]:before {
+         content: "";
+         display: block;
+         position: absolute;
+         width: 16px;
+         height: 16px;
+         top: 0;
+         left: 0;
+         border: 2px solid #555555;
+         border-radius: 3px;
+         background-color: white;
+}
+    input[type=checkbox]:checked:after {
+         content: "";
+         display: block;
+         width: 5px;
+         height: 10px;
+         border: solid black;
+         border-width: 0 2px 2px 0;
+         -webkit-transform: rotate(45deg);
+         -ms-transform: rotate(45deg);
+         transform: rotate(45deg);
+         position: absolute;
+         top: 2px;
+         left: 6px;
+}
+
+        h2{
+            font-size: xxx-large;
+            font-weight: bolder;
+        }
+
+        input [t]
+
+        body {
+            font-family: 'Dom Casual', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--primary-color);
+            padding: 10px 20px;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+
+        header .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+        }
+
+        header .logo img {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+        }
+
+        nav a {
+            margin: 0 10px;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: var(--text-color);
+            border-radius: 8px;
+            transition: background-color 0.3s, border-radius 0.3s;
+        }
+
+        nav a:hover, nav a:focus {
+            background-color: var(--hover-color);
+            outline: none;
+            border-radius: 12px;
+        }
+
+        nav .toggle {
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+        }
+
+        nav .toggle input {
+            display: none;
+        }
+
+        nav .toggle input + label {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+            border-radius: 34px;
+            background-color: #ccc;
+            transition: 0.4s;
+        }
+
+        nav .toggle input + label::after {
+            content: "";
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 26px;
+            height: 26px;
+            background-color: white;
+            border-radius: 50%;
+            transition: 0.4s;
+        }
+
+        nav .toggle input:checked + label {
+            background-color: var(--secondary-color);
+        }
+
+        nav .toggle input:checked + label::after {
+            transform: translateX(26px);
+        }
+
+        nav .dropdown .dropdown-menu {
+            background-color: var(--highlight-color);
+            border-radius: 8px;
+        }
+
+        nav .dropdown .dropdown-menu a {
+            color: var(--text-color);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            border-radius: 8px;
+            transition: background-color 0.3s, border-radius 0.3s;
+        }
+
+        nav .dropdown .dropdown-menu a:hover, nav .dropdown .dropdown-menu a:focus {
+            background-color: var(--hover-color);
+            outline: none;
+            border-radius: 12px;
+        }
+
+        main {
+            flex: 1;
+            padding: 20px;
+        }
+
+        main .content {
+            background-color: var(--highlight-color);
+            padding: 20px;
+            border: 2px solid var(--secondary-color);
+            border-radius: 8px;
+            height: calc(100%40px);
+            position: relative;
+        }
+
+        .todo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .todo-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid var(--secondary-color);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            background-color: white;
+        }
+
+        .todo-item.greyed-out {
+            background-color: #f0f0f0;
+        }
+
+        .todo-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .new-task-btn {
+            background-color: var(--button-green);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 50px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+
+        .new-task-btn:hover {
+            background-color: var(--button-green-hover);
+        }
+
+        .sub-tasks {
+            margin-left: 20px;
+        }
+
+        .sub-task-item {
+            display: inline-flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px;
+            border: 1px solid var(--secondary-color);
+            border-radius: 8px;
+            margin-bottom: 5px;
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+    <header class="d-flex justify-content-between align-items-center">
+        <div class="logo" aria-label="Site Logo" title="Site Logo">
+            <img src="https://cdn.iconscout.com/icon/free/png-512/free-bird-1602263-1358182.png?f=webp&w=256" alt="Bird Icon"> FocusNest
+        </div>
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" aria-label="Dashboard" title="Dashboard">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" aria-label="Focus" title="Focus">Focus</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" aria-label="Notifications" title="Notifications">Notifications</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Account">Account</a>
+                        <div class="dropdown-menu" aria-labelledby="accountDropdown">
+                            <a class="dropdown-item" href="#" aria-label="Profile" title="Profile">Profile</a>
+                            <a class="dropdown-item" href="#" aria-label="Account Details" title="Account Details">Account Details</a>
+                            <a class="dropdown-item" href="#" aria-label="Delete Account" title="Delete Account">Delete Account</a>
+                            <a class="dropdown-item" href="#" aria-label="Log Out" title="Log Out">Log Out</a>
+                        </div>
+                    </li>
+                    <li class="nav-item toggle" title="Focus Mode">
+                        <input type="checkbox" id="focus-mode" aria-label="Focus Mode Toggle">
+                        <label for="focus-mode"></label>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <main>
+    <div class="content">
+        <div class="todo-header">
+            <h2>To Do List</h2>
+            <button class="new-task-btn">New Task</button>
+        </div>
+
+
+        <h3>Now</h3>
+        <div class="todo-item">
+
+            <p>
+            <input id="check1" type="checkbox">
+            <label for="check1">Complete project documentation</label>
+            </p>
+            <div class="todo-buttons">
+                <button class="btn btn-outline-primary btn-sm">Edit</button>
+                <button class="btn btn-outline-secondary btn-sm">Split</button>
+            </div>
+        </div>
+
+        <h3>Next</h3>
+        <div class="todo-item greyed-out">
+
+            <p>
+            <input id="check1" type="checkbox">
+            <label for="check1">Complete diagrams</label>
+            </p>
+            <div class="todo-buttons">
+                <button class="btn btn-outline-secondary btn-sm" disabled>Done</button>
+            </div>
+        </div>
+        <h3>Later</h3>
+        <div class="todo-item greyed-out">
+
+            <p>
+            <input id="check1" type="checkbox">
+            <label for="check1">Research further topics</label>
+            </p>
+            <div class="sub-tasks">
+                <div class="sub-task-item">
+                    <span>Find sources</span>
+                    <div class="todo-buttons">
+                        <button class="btn btn-outline-primary btn-sm">Edit</button>
+                        <label for="step-1"></label>
+                        <input type="checkbox" id="step-1" name="step-1">
+                    </div>
+                </div>
+                <div class="sub-task-item">
+                    <span>Summarize findings</span>
+                    <div class="todo-buttons">
+                        <button class="btn btn-outline-primary btn-sm">Edit</button>
+                    </div>
+                </div>
+                <div class="sub-task-item">
+                    <span>Summarize other findings</span>
+                    <div class="todo-buttons">
+                        <button class="btn btn-outline-primary btn-sm">Edit</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="todo-item greyed-out">
+
+            <div class="todo-buttons">
+                <button class="btn btn-outline-secondary btn-sm" disabled>Done</button>
+            </div>
+            <span>Research further topics</span>
+            <div class="sub-tasks">
+                <div class="sub-task-item">
+                    <span>Find sources</span>
+                    <div class="todo-buttons">
+                        <button class="btn btn-outline-primary btn-sm">Edit</button>
+                    </div>
+                </div>
+                <div class="sub-task-item">
+                    <span>Summarize findings</span>
+                    <div class="todo-buttons">
+                        <button class="btn btn-outline-primary btn-sm">Edit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="todo-item greyed-out">
+
+            <div class="todo-buttons">
+                <button class="btn btn-outline-secondary btn-sm" disabled>Done</button>
+            </div>
+            <span>Research Science topics</span>
+            <div class="sub-tasks">
+                <div class="sub-task-item">
+                    <span>Find sources</span>
+                    <div class="todo-buttons">
+                        <button class="btn btn-outline-primary btn-sm">Edit</button>
+                    </div>
+                </div>
+                <div class="sub-task-item">
+                    <span>Summarize findings</span>
+                    <div class="todo-buttons">
+                        <button class="btn btn-outline-primary btn-sm">Edit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </main>
+    <footer>Footer</footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    </body>
+</html>
